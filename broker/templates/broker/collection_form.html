@@ -1,0 +1,66 @@
+{% extends 'broker/base.html' %}
+{% block title %}Record Milk Collection{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Record Milk Collection</h2>
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+</div>
+
+<div class="form-container">
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.farmer.id_for_label }}">Select Farmer *</label>
+            {{ form.farmer }}
+            {% if form.farmer.errors %}
+                <span class="error">{{ form.farmer.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.quantity.id_for_label }}">Quantity (Liters) *</label>
+                {{ form.quantity }}
+                {% if form.quantity.errors %}
+                    <span class="error">{{ form.quantity.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.price_per_liter.id_for_label }}">Price per Liter *</label>
+                {{ form.price_per_liter }}
+                {% if form.price_per_liter.errors %}
+                    <span class="error">{{ form.price_per_liter.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.collection_date.id_for_label }}">Collection Date *</label>
+            {{ form.collection_date }}
+            {% if form.collection_date.errors %}
+                <span class="error">{{ form.collection_date.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.notes.id_for_label }}">Notes</label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+                <span class="error">{{ form.notes.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="alert alert-info">
+            📱 An SMS will be automatically sent to the farmer after recording this collection.
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Record Collection & Send SMS</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'broker/base.html' %}
+{% block title %}{{ farmer.first_name }} {{ farmer.last_name }} - Details{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Farmer Details</h2>
+    <div class="btn-group">
+        <a href="{% url 'farmer_update' farmer.pk %}" class="btn btn-warning">Edit Details</a>
+        <a href="{% url 'farmer_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="detail-card">
+        <h3>Personal Information</h3>
+        <div class="detail-row">
+            <span class="detail-label">Farmer ID:</span>
+            <span class="detail-value"><strong>{{ farmer.farmer_id }}</strong></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Full Name:</span>
+            <span class="detail-value">{{ farmer.first_name }} {{ farmer.last_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Phone Number:</span>
+            <span class="detail-value">{{ farmer.phone_number }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">ID Number:</span>
+            <span class="detail-value">{{ farmer.id_number }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Location:</span>
+            <span class="detail-value">{{ farmer.location }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value">
+                {% if farmer.is_active %}
+                    <span class="badge badge-success">Active</span>
+                {% else %}
+                    <span class="badge badge-danger">Inactive</span>
+                {% endif %}
+            </span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Registered:</span>
+            <span class="detail-value">{{ farmer.date_registered|date:"F d, Y" }}</span>
+        </div>
+        {% if farmer.notes %}
+        <div class="detail-row">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">{{ farmer.notes }}</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="detail-card">
+        <h3>Collection Statistics</h3>
+        <div class="stats-small">
+            <div class="stat-small-item">
+                <p class="stat-small-label">Total Collected</p>
+                <p class="stat-small-value">{{ total_collected|floatformat:2 }}L</p>
+            </div>
+            <div class="stat-small-item">
+                <p class="stat-small-label">This Month</p>
+                <p class="stat-small-value">{{ month_collected|floatformat:2 }}L</p>
+            </div>
+            <div class="stat-small-item">
+                <p class="stat-small-label">Total Revenue</p>
+                <p class="stat-small-value">KES {{ total_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="collections-section">
+    <h3>Recent Collections</h3>
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Quantity (L)</th>
+                    <th>Price/L</th>
+                    <th>Total Amount</th>
+                    <th>SMS Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for collection in collections %}
+                <tr>
+                    <td>{{ collection.collection_date }}</td>
+                    <td>{{ collection.quantity }}</td>
+                    <td>KES {{ collection.price_per_liter }}</td>
+                    <td>KES {{ collection.total_amount }}</td>
+                    <td>
+                        {% if collection.sms_sent %}
+                            <span class="badge badge-success">Sent</span>
+                        {% else %}
+                            <span class="badge badge-warning">Failed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No collections yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

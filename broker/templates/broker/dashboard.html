@@ -1,0 +1,107 @@
+{% extends 'broker/base.html' %}
+{% block title %}Dashboard - Milk Broker System{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h2 class="page-title">Dashboard Overview</h2>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👨‍🌾</div>
+            <div class="stat-info">
+                <h3>Total Farmers</h3>
+                <p class="stat-number">{{ total_farmers }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🥛</div>
+            <div class="stat-info">
+                <h3>Today's Collection</h3>
+                <p class="stat-number">{{ today_quantity|floatformat:2 }}L</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+                <h3>Today's Revenue</h3>
+                <p class="stat-number">KES {{ today_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+                <h3>Monthly Collection</h3>
+                <p class="stat-number">{{ month_quantity|floatformat:2 }}L</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-section">
+            <h3>Recent Collections</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Farmer</th>
+                            <th>Quantity (L)</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>SMS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for collection in recent_collections %}
+                        <tr>
+                            <td>{{ collection.farmer.farmer_id }}</td>
+                            <td>{{ collection.quantity }}</td>
+                            <td>{{ collection.collection_date }}</td>
+                            <td>KES {{ collection.total_amount }}</td>
+                            <td>
+                                {% if collection.sms_sent %}
+                                    <span class="badge badge-success">✓ Sent</span>
+                                {% else %}
+                                    <span class="badge badge-warning">✗ Failed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No collections yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-section">
+            <h3>Top Farmers (All Time)</h3>
+            <div class="farmers-list">
+                {% for farmer in top_farmers %}
+                <div class="farmer-item">
+                    <div class="farmer-info">
+                        <strong>{{ farmer.farmer_id }}</strong>
+                        <span>{{ farmer.first_name }} {{ farmer.last_name }}</span>
+                    </div>
+                    <div class="farmer-stat">
+                        {{ farmer.total_milk|floatformat:2 }}L
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No farmers yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="{% url 'farmer_create' %}" class="btn btn-primary">Register New Farmer</a>
+        <a href="{% url 'collection_create' %}" class="btn btn-success">Record Collection</a>
+        <a href="{% url 'farmer_list' %}" class="btn btn-secondary">View All Farmers</a>
+    </div>
+</div>
+{% endblock %}

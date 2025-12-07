@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Farmers List{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">Registered Farmers</h2>
+    <a href="{% url 'farmer_create' %}" class="btn btn-primary">+ Register New Farmer</a>
+</div>
+
+<div class="search-box">
+    <form method="get" action="{% url 'farmer_list' %}">
+        <input type="text" name="q" placeholder="Search by name, ID, phone, location..."
+               value="{{ query }}" class="search-input">
+        <button type="submit" class="btn btn-search">Search</button>
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Farmer ID</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Location</th>
+                <th>Registered</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for farmer in farmers %}
+            <tr>
+                <td><strong>{{ farmer.farmer_id }}</strong></td>
+                <td>{{ farmer.first_name }} {{ farmer.last_name }}</td>
+                <td>{{ farmer.phone_number }}</td>
+                <td>{{ farmer.location }}</td>
+                <td>{{ farmer.date_registered|date:"M d, Y" }}</td>
+                <td>
+                    {% if farmer.is_active %}
+                        <span class="badge badge-success">Active</span>
+                    {% else %}
+                        <span class="badge badge-danger">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'farmer_detail' farmer.pk %}" class="btn-small btn-info">View</a>
+                    <a href="{% url 'farmer_update' farmer.pk %}" class="btn-small btn-warning">Edit</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No farmers found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
